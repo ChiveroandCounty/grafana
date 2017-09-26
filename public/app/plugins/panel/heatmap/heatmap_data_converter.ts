@@ -335,7 +335,7 @@ function calculateBucketSize(bounds: number[], logBase = 1): number {
   if (bounds.length === 0) {
     return 0;
   } else if (bounds.length === 1) {
-    return bounds[0];
+    return 30 * 60 * 1000;
   } else {
     bounds = _.sortBy(bounds);
     for (let i = 1; i < bounds.length; i++) {
