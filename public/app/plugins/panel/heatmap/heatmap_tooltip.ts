@@ -75,7 +75,6 @@ export class HeatmapTooltip {
     }
 
     let {xBucketIndex, yBucketIndex} = this.getBucketIndexes(pos, data);
-
     if (!data.buckets[xBucketIndex] || !this.tooltip) {
       this.destroy();
       return;
@@ -142,8 +141,22 @@ export class HeatmapTooltip {
   }
 
   getXBucketIndex(offsetX, data) {
+    // convert browser x to x-axis time
     let x = this.scope.xScale.invert(offsetX - this.scope.yAxisWidth).valueOf();
-    let xBucketIndex = getValueBucketBound(x, data.xBucketSize, 1);
+
+    // figure out if the mouse is over a bucket of data
+    let timestamps = Object.keys(data.buckets)
+      .map(key => Number(key))
+      .sort();
+    let buckets = timestamps.filter(timestamp => {
+      return x > timestamp && x < timestamp + data.xBucketSize;
+    });
+
+    let xBucketIndex = buckets.length ? buckets[0] : 0;
+
+    // previous code
+    // let xBucketIndex = getValueBucketBound(x, data.xBucketSize, 1);
+
     return xBucketIndex;
   }
 
